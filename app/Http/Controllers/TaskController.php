@@ -46,10 +46,10 @@ class TaskController extends Controller
 
         $task = new Task($request->all());
         $task->maximum_execution_date = date("Y-m-d H:i:s", strtotime($request->maximum_execution_date));
-        if($task->save()){
-            return redirect()->route('home')->with('success','successfully created task.');
-        }else{
-            return redirect()->back()->withInput($request->all())->with('danger','The task could not be created.');
+        if ($task->save()) {
+            return redirect()->route('home')->with('success', 'successfully created task.');
+        } else {
+            return redirect()->back()->withInput($request->all())->with('danger', 'The task could not be created.');
         }
     }
 
@@ -91,6 +91,11 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Task $task) {
-        dd($task);
+        $this->authorize('delete', [Task::class, $task]);
+        if ($task->delete()) {
+            return redirect()->route('home')->with('success', 'Task removed successfully.');
+        } else {
+            return redirect()->route('home')->with('success', 'Task not deleted correctly.');
+        }
     }
 }
