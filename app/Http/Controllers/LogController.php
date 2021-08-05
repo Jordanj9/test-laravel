@@ -28,7 +28,7 @@ class LogController extends Controller
      */
     public function create($id) {
         $task = Task::findOrFail($id);
-        $this->authorize('create', [Log::class,$task]);
+        $this->authorize('create', [Log::class, $task]);
         $logs = $task->logs;
         return view('log.create', compact('task', 'logs'));
     }
@@ -40,7 +40,6 @@ class LogController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $user = Auth::user();
         $validate = Validator::make($request->all(), [
             'comment' => 'required|string|max:255',
             'task_id' => 'required|numeric',
@@ -52,10 +51,21 @@ class LogController extends Controller
         $log = new Log($request->all());
         $log->date = date("Y-m-d H:i:s", strtotime($request->date));
         if ($log->save()) {
-            Mail::to('jordan_j9@hotmail.com')->send(new LogsNotification($user, $log));
-            return redirect()->route('log.new', $request->task_id)->with('success', 'successfully created logs.');
+            $msg = 'successfully created logs. ';
+            $msg .= $this->sendEmail($log);
+            return redirect()->route('log.new', $request->task_id)->with('success', $msg);
         } else {
             return redirect()->back()->withInput($request->all())->with('danger', 'The logs could not be created.');
+        }
+    }
+
+    private function sendEmail($log) {
+        try {
+            $user = Auth::user();
+            Mail::to('jordan_j9@hotmail.com')->send(new LogsNotification($user, $log));
+            return 'Email sent';
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
         }
     }
 
