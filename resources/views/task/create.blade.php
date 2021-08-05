@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="maximum_execution_date"
-                                           class="col-md-4 col-form-label text-md-right"><strong>{{ __('Maximum execution date') }}</strong></label>
+                                           class="col-md-6 col-form-label text-md-right"><strong>{{ __('Maximum execution date') }}</strong></label>
                                     <input type="datetime-local" name="maximum_execution_date"
                                            value="{{old('maximum_execution_date')}}"
                                            class="form-control @error('maximum_execution_date') is-invalid @enderror">

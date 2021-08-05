@@ -18,14 +18,6 @@ class Product extends Model
         'id', 'name', 'quantity', 'price', 'invoice_id', 'created_at', 'updated_at'
     ];
 
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'saved' => UserSaved::class,
-    ];
     public function invoice() {
         return $this->belongsTo(Invoice::class);
     }
