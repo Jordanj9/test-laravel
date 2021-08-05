@@ -60,7 +60,7 @@ class TaskController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Task $task) {
-        dd('aqui');
+        //
     }
 
     /**

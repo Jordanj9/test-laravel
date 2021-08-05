@@ -28,6 +28,7 @@ class LogController extends Controller
      */
     public function create($id) {
         $task = Task::findOrFail($id);
+        $this->authorize('create', [Log::class,$task]);
         $logs = $task->logs;
         return view('log.create', compact('task', 'logs'));
     }
