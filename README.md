@@ -1,62 +1,64 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+## Test Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 1) Visualiza las siguientes estructuras de tablas.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Invoice (id, date, user_id, seller_id, type)  
+Product (id, invoice_id, name, quantity, price)  
+En base a esas estructuras, genera utilizando Eloquent, las consultas para obtener la siguiente información:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Obtener precio total de la factura
 
-## Learning Laravel
+  `$invoice = 1; //id de invoice a consultar`  
+  `$query = Invoice::where('invoices.id',$invoice)`  
+  `->leftJoin('products','products.invoice_id','=','invoices.id')`  
+  `->groupBy('invoices.id')`  
+  `->selectRaw('sum(products.price * products.quantity) as total, invoices.id')->first()`  
+  `//show total`  
+  `$query->total;`
+- Obtener todos id de las facturas que tengan productos con cantidad mayor a 100.  
+  `Invoice::whereHas('products',function($query){`  
+  `$query->where('quantity','>',100);`  
+  `})->select('id')->get();`
+- Obtener todos los nombres de los productos cuyo valor final sea superior a $1.000.000 CLP.  
+  
+  `Product::whereRaw('quantity * price > 1000000')->select('name')->get();`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2) Indica paso a paso los comandos para una instalación básica de Laravel que me permita ver la página principal (recuerda describir qué hace cada comando).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+`composer create-project laravel/laravel new-project`
 
-## Laravel Sponsors
+Este comando te creará la carpeta de tu nuevo proyecto, que tendrá el nombre en este caso de "new-project" y dentro de
+tal directorio colocará todos los archivos del proyecto Laravel.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+`cd new-project`
 
-### Premium Partners
+Accedemos a la carpeta del proyecto
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+`php artisan serve`
 
-## Contributing
+Este comando ejecuta la aplicación en un servidor de desarrollo incluido por defecto en Laravel. Por tanto debemos hacer
+clic en la URL que nos muestra para explorar la aplicación en el navegador. Para detener la ejecución presiona Ctrl + C
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Al ejecutar ese comando nos aparecerá un mensaje con la ruta del servidor recién instanciado, algo
+como [http://127.0.0.1:8000](http://127.0.0.1:8000/)
 
-## Code of Conduct
+### 3) Explícanos ¿qué es "Laravel Jetstream"? y ¿qué permite "Livewire" a los programadores?
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Uno de los objetivos de un programador es ahorrar tiempo, teniendo una base sólida para comenzar nuevos proyectos es más
+que suficiente. Algunos sistemas tan simples como el gestor de sesiones y doble factor de sesión llevarían horas de
+programación. Pero con Laravel JetsStream sus módulos lo permitiran en tan solo unos minutos.
 
-## Security Vulnerabilities
+Jetstream ofrece una mesa de trabajo prediseñada para comenzar a desarrollar aplicaciones con Laravel, nos ayuda a tener una base solida para iniciar nuestros proyectos, acortando así los tiempos de desarrollo.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Livewire permite a los desarrolladores crear componentes Laravel que pueden comunicarse automaticamente entre la vista y
+el controlador, de modo que se produzcan comportamientos dinámicos sin usar Javascript.
 
-## License
+Por medio de componentes Livewire que se puede escribir con vistas de Blade, es posible conversar entre el cliente y el
+servidor de una manera sencilla y sin necesidad de recargar la página. Gracias a Livewire el navegador puede reaccionar
+dinámicamente a los cambios en los modelos del lado del servidor, mediante Ajax, pero sin usar Javascript.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Livewire permite realizar sitios web con una experiencia de usuario avanzada, similares a los que se realizaria con
+sistemas como Vue o React, pero de una manera extremadamente más sencilla. 
